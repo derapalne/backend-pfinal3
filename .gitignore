@@ -1,0 +1,4 @@
+node_modules
+imgUploads
+errors.log
+.env
