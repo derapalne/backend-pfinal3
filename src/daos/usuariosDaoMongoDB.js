@@ -26,7 +26,7 @@ class UsuariosDaoMongoDB extends ContenedorMongoDB {
             if(respuesta[0]) {
                 return respuesta[0];
             } else {
-                return {error: "Elemento no encontrado"};
+                return null;
             }
              
         } catch (e) {

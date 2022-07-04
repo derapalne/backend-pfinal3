@@ -1,4 +1,4 @@
 node_modules
-imgUploads
+public/imgUploads
 errors.log
 .env

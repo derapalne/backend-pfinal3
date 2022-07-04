@@ -25,6 +25,7 @@ passport.use(
         },
         async (req, email, password, done) => {
             const existe = await usuariosDao.getByEmail(email);
+            // logger.trace(existe);
             if (existe) {
                 return done(null, false);
             } else {
@@ -34,11 +35,12 @@ passport.use(
                     direccion: req.body.direccion,
                     edad: req.body.edad,
                     tel: req.body.tel,
-                    avatar: req.file.filename,
+                    avatar: "./imgUploads/" + req.file.filename,
                 };
+                // logger.trace(usuario);
                 usuario.password = await bcrypt.hash(password, 9);
                 usuariosDao.agregar(usuario);
-                logger.trace("Usuario creado:" + usuario.email);
+                logger.trace("Usuario creado: " + usuario.email);
                 return done(null, usuario);
             }
         }

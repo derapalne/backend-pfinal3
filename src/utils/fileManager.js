@@ -4,10 +4,10 @@ import { logger } from "./logger.js";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './imgUploads');
+        cb(null, './public/imgUploads');
     },
     filename: (req, file, cb) => {
-        cb(null, `${process.pid}-${Date.now()}-${file.originalname}`);
+        cb(null, `${Date.now()}-${process.pid}-${file.originalname}`);
     }
 })
 

@@ -64,12 +64,16 @@ app.set("view engine", "ejs");
 app.use("/api/productos", routerProd);
 app.use("/api/carrito", routerCart);
 
-app.get("/", (req, res) => {
+import ProductosDaoMongoDB from './src/daos/productosDaoMongoDB.js';
+const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
+
+app.get("/", async (req, res) => {
+    // logger.trace("hola" + req.user);
     try {
         if (!req.isAuthenticated()) {
             res.redirect("/login");
         } else {
-            res.status(200).render("main");
+            res.status(200).render("main", {usuario: req.user, productos: await productosDao.getAll()});
         }
     } catch (e) {
         logErr.error(e);
@@ -81,7 +85,7 @@ app.get("/login", (req, res) => {
         if (req.isAuthenticated()) {
             res.redirect("/");
         } else {
-            res.status(200).render("login");
+            res.status(200).render("login", {error: null});
         }
     } catch (e) {
         logErr.error(e);
@@ -93,7 +97,20 @@ app.get("/register", (req, res) => {
         if (req.isAuthenticated()) {
             res.redirect("/");
         } else {
-            res.status(200).render("register");
+            res.status(200).render("register", {error: null});
+        }
+    } catch (e) {
+        logErr.error(e);
+    }
+});
+
+app.get("/register-error", (req, res) => {
+    logger.trace(req.body);
+    try {
+        if (req.isAuthenticated()) {
+            res.redirect("/");
+        } else {
+            res.status(200).render("register", {error: "Credenciales Incorrectas!"});
         }
     } catch (e) {
         logErr.error(e);
@@ -112,6 +129,7 @@ app.post(
     }),
     (req, res, next) => {}
 );
+
 // ERROR 404
 
 // app.use((err, req, res, next) => {
@@ -125,7 +143,7 @@ app.post(
 
 // PRUEBAS
 
-// productosApi.addProducto({
+// productosDao.agregar({
 //     nombre: "Guerra Biológica",
 //     descripcion: "Efectivo contra tu vecino molesto.",
 //     codigo: "GB398",
@@ -134,7 +152,7 @@ app.post(
 //     thumbnail: "https://cdn3.iconfinder.com/data/icons/finance-152/64/9-256.png",
 // });
 
-// productosApi.addProducto({
+// productosDao.agregar({
 //     nombre: "Soborno",
 //     descripcion: "Funciona sin fallas, siempre y cuando no te enganchen.",
 //     codigo: "S133",
@@ -143,7 +161,7 @@ app.post(
 //     thumbnail: "https://cdn3.iconfinder.com/data/icons/finance-152/64/7-256.png",
 // });
 
-// productosApi.addProducto({
+// productosDao.agregar({
 //     nombre: "Manteca Brillante",
 //     descripcion: "Es dura. No se recomienda comer.",
 //     codigo: "MB078",
@@ -152,7 +170,7 @@ app.post(
 //     thumbnail: "https://cdn3.iconfinder.com/data/icons/finance-152/64/29-256.png",
 // });
 
-// productosApi.addProducto({
+// productosDao.agregar({
 //     nombre: "Martillo Bromista",
 //     descripcion: "Convierte a tus amigos en monedas de diez centavos sin esfuerzo.",
 //     codigo: "MB120",
@@ -180,7 +198,7 @@ if (config.MODO == "fork") {
         }
         cluster.on("listening", (worker, address) => {
             logger.info(
-                `Proceso secundario ${worker.process.pid} escuchando en http://localhost:${adress.port}`
+                `Proceso secundario ${worker.process.pid} escuchando en http://localhost:${address.port}`
             );
         });
     } else {
