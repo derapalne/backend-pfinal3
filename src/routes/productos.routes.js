@@ -11,16 +11,20 @@ const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
 // Me permite listar todos los productos disponibles ó un producto por su ID
 // USUARIO + ADMIN
 routerProd.get("/:id?", async (req, res) => {
-    const id = req.params.id;
-    if (isNaN(id)) {
-        res.status(200).json(await productosDao.getAll());
-    } else {
-        const respuesta = await productosDao.getById(id);
-        if (respuesta.error) {
-            res.status(204).json(respuesta);
+    if (req.isAuthenticated()) {
+        const id = req.params.id;
+        if (isNaN(id)) {
+            res.status(200).json(await productosDao.getAll());
         } else {
-            res.status(200).json(respuesta);
+            const respuesta = await productosDao.getById(id);
+            if (respuesta.error) {
+                res.status(204).json(respuesta);
+            } else {
+                res.status(200).json(respuesta);
+            }
         }
+    } else {
+        res.status(403).redirect("/login");
     }
 });
 

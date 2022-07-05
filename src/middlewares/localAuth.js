@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import UsuariosDaoMongoDB from "../daos/usuariosDaoMongoDB.js";
 import { config } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
+import {sendRegisterMail} from "../utils/mailer.js";
 const usuariosDao = new UsuariosDaoMongoDB(config.MONGO_URI);
 
 passport.serializeUser((usuario, done) => {
@@ -41,6 +42,7 @@ passport.use(
                 usuario.password = await bcrypt.hash(password, 9);
                 usuariosDao.agregar(usuario);
                 logger.trace("Usuario creado: " + usuario.email);
+                sendRegisterMail(usuario);
                 return done(null, usuario);
             }
         }

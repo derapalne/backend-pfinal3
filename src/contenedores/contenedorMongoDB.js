@@ -25,7 +25,7 @@ class ContenedorMongoDB {
             const nuevaData = new this.Model(data);
             await nuevaData.save();
             logger.info(data);
-            logger.info("Data guardada :) AGREGAR TIPO DE DATA");
+            logger.info("Data guardada :)");
             return data.id;
         } catch (e) {
             logErr.error(e);

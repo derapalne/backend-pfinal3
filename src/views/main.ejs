@@ -47,9 +47,12 @@
           <td><%=producto.nombre%></td>
           <td>---></td>
           <td>$<%=producto.precio%></td>
+          <td>---+</td>
           <td>
-            <form action="/api/carrito/0/productos/<%= producto.id %>" method="delete">
-
+            <form action="/api/carrito/0/productos" method="post">
+              <input type="hidden" name="delete" value="delete"/>
+              <input type="hidden" name="idProd" value="<%= %>>"/>
+              <input type="submit" value="Sacar"/>
             </form>
           </td>
         </tr>

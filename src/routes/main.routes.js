@@ -19,8 +19,8 @@ routerMain.get("/", async (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect("/login");
         } else {
-            let carrito = await carritosDao.getById(0)
-            if(!carrito) {
+            let carrito = await carritosDao.getById(0);
+            if (!carrito) {
                 //logger.trace("hola");
                 await carritosDao.agregarCart();
                 carrito = await carritosDao.getById(0);
@@ -95,9 +95,23 @@ routerMain.post(
     (req, res, next) => {}
 );
 
+routerMain.post("/logout", (req, res) => {
+    try {
+        if (req.isAuthenticated()) {
+            logger.trace("Desruyendo datos de sesión");
+            req.session.destroy((err) => {
+                logger.trace("Datos de sesión destruidos");
+                res.status(200).render("login", {error: null});
+            });
+        }
+    } catch (e) {
+        logErr.error(e);
+    }
+});
+
 export default routerMain;
 
-// Agregar productos, COMENTAR Y DESCOMENTAR DE A UNO SINO SE CARGAN MAL
+// Agregar productos, DESCOMENTAR Y COMENTAR DE A UNO SINO SE CARGAN MAL
 
 // productosDao.deleteAll();
 
