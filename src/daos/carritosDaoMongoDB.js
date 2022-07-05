@@ -25,7 +25,7 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
     async agregarProd(id, producto) {
         if(check(producto)) {
             try {
-                connect(this.uri, {
+                mongoose.connect(this.uri, {
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                 });
@@ -48,7 +48,7 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
     async deleteProdById(id, idProd) {
         if(check(producto)) {
             try {
-                connect(this.uri, {
+                mongoose.connect(this.uri, {
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                 });

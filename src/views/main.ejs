@@ -7,8 +7,9 @@
 
 <body>
   <div class="bigDiv">
-    <h1>Hola *DERACOMMERCE*</h1>
-    <p>Esta página está en construcción!</p>
+    <!-- CABECERA -->
+    <h1>Hola esto es -DERACOMMERCE-</h1>
+    <p>Esta página está en construcción! (todavía)</p>
     <div>
       <table class="centeredTable darkBorder">
         <tr class="lightBg">
@@ -16,15 +17,49 @@
             <h3>Hola, <%= usuario.nombre %></h3>
             <img src=<%= usuario.avatar %>>
           </td>
-          <td><p>||| <br/> |||</p></td>
+          <td>
+            <p>||| <br /> ||| <br /> |||</p>
+          </td>
           <td class="shortPadding">
             <p>Direccion: <%= usuario.direccion %> </p>
             <p>Edad: <%= usuario.edad %> </p>
             <p>Teléfono: <%= usuario.tel %> </p>
           </td>
         </tr>
+        <tr>
+          <td>
+            <form action="/logout" method="post">
+              <input type="submit" id="logoutButton" value="Desloguearse" />
+            </form>
+          </td>
+        </tr>
       </table>
     </div>
+    <!-- CARRITOS -->
+    <div>
+      <h2>Tu changuito de compras</h2>
+      <% if (carrito.productos.length == 0) { %>
+      <p>Todavía no agregaste productos a tu changuito...</p>
+      <% } else { %>
+      <table class="centeredTable">
+        <% carrito.productos.forEach(producto => { %>
+        <tr>
+          <td><%=producto.nombre%></td>
+          <td>---></td>
+          <td>$<%=producto.precio%></td>
+          <td>
+            <form action="/api/carrito/0/productos/<%= producto.id %>" method="delete">
+
+            </form>
+          </td>
+        </tr>
+        <tr></tr>
+        <% }) %>
+      </table>
+      <% } %>
+    </div>
+    <!-- PRODUCTOS -->
+    <br/>
     <% if (productos.length > 0) { %>
     <table class="centeredTable darkBorder" style="padding: 10px">
       <% productos.forEach(producto => { %>
@@ -34,20 +69,25 @@
           <img src=<%= producto.thumbnail %> />
           <p> <%= producto.descripcion %> </p>
         </td>
-        <td><p>|</p></td>
+        <td>
+          <p>|</p>
+        </td>
         <td>
           <p>$<%= producto.precio %> </p>
           <small>CÓDIGO <%= producto.codigo %></small>
-          <br/>
-          <button onclick="agregar('<%=producto.id%>')">Agregar al chango</button>
+          <br />
+          <form action="/api/carrito/0/productos" method="post">
+            <input type="hidden" name="idProd" value=<%=producto.id%>>
+            <input type="submit" value="Agregar al chango">
+          </form>
         </td>
       </tr>
-      <br />
-     <% }) %>
+      <% }) %>
     </table>
     <% } else { %>
 
     <% } %>
+    <br/>
     <a href="/">WIP</a>
   </div>
 </body>

@@ -1,7 +1,8 @@
-import {Router} from 'express';
-import CarritosDaoMongoDB from '../daos/carritosDaoMongoDB.js';
-import ProductosDaoMongoDB from '../daos/productosDaoMongoDB.js';
-import {config} from '../utils/config.js';
+import { Router } from "express";
+import CarritosDaoMongoDB from "../daos/carritosDaoMongoDB.js";
+import ProductosDaoMongoDB from "../daos/productosDaoMongoDB.js";
+import { config } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 
 const routerCart = Router();
 const carritosDao = new CarritosDaoMongoDB(config.MONGO_URI);
@@ -40,10 +41,11 @@ routerCart.post("/:id/productos", async (req, res) => {
         res.status(204).json(producto);
     } else {
         const carritoReturn = await carritosDao.agregarProd(idCart, producto);
-        if (carritoReturn) {
+        if (isNaN(carritoReturn)) {
+            logger.trace(carritoReturn);
             res.status(204).json(carritoReturn);
         } else {
-            res.status(201).json({ mensaje: "Producto agregado." });
+            res.status(201).redirect("/");
         }
     }
 });

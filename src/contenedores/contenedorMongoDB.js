@@ -15,6 +15,7 @@ class ContenedorMongoDB {
                 useUnifiedTopology: true,
             });
             const largestId = await this.Model.find({},{_id: 0, id: 1}).sort({id: -1}).limit(1);
+            logger.trace("ID MAS GRANDE " + largestId);
             if(largestId[0]) {
                 data.id = largestId[0].id + 1;
             } else {
@@ -54,7 +55,7 @@ class ContenedorMongoDB {
             if(respuesta[0]) {
                 return respuesta[0];
             } else {
-                return {error: "Elemento no encontrado"};
+                return null;
             }
              
         } catch (e) {
