@@ -5,8 +5,7 @@ import { logger, logErr } from "./src/utils/logger.js";
 // >>>>>ROUTERS
 import routerCart from "./src/routes/carritos.routes.js";
 import routerProd from "./src/routes/productos.routes.js";
-// >>>>>GUARDADO DE IMAGENES
-import upload from "./src/utils/fileManager.js";
+import routerMain from "./src/routes/main.routes.js";
 // >>>>>LOCAL AUTH
 import "./src/middlewares/localAuth.js";
 
@@ -63,72 +62,8 @@ app.set("view engine", "ejs");
 
 app.use("/api/productos", routerProd);
 app.use("/api/carrito", routerCart);
+app.use("/", routerMain);
 
-import ProductosDaoMongoDB from './src/daos/productosDaoMongoDB.js';
-const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
-
-app.get("/", async (req, res) => {
-    // logger.trace("hola" + req.user);
-    try {
-        if (!req.isAuthenticated()) {
-            res.redirect("/login");
-        } else {
-            res.status(200).render("main", {usuario: req.user, productos: await productosDao.getAll()});
-        }
-    } catch (e) {
-        logErr.error(e);
-    }
-});
-
-app.get("/login", (req, res) => {
-    try {
-        if (req.isAuthenticated()) {
-            res.redirect("/");
-        } else {
-            res.status(200).render("login", {error: null});
-        }
-    } catch (e) {
-        logErr.error(e);
-    }
-});
-
-app.get("/register", (req, res) => {
-    try {
-        if (req.isAuthenticated()) {
-            res.redirect("/");
-        } else {
-            res.status(200).render("register", {error: null});
-        }
-    } catch (e) {
-        logErr.error(e);
-    }
-});
-
-app.get("/register-error", (req, res) => {
-    logger.trace(req.body);
-    try {
-        if (req.isAuthenticated()) {
-            res.redirect("/");
-        } else {
-            res.status(200).render("register", {error: "Credenciales Incorrectas!"});
-        }
-    } catch (e) {
-        logErr.error(e);
-    }
-});
-
-// Autenticación temporal
-
-app.post(
-    "/register",
-    upload.single("avatar"),
-    passport.authenticate("local-register", {
-        successRedirect: "/",
-        failureRedirect: "/register-error",
-        passReqToCallback: true,
-    }),
-    (req, res, next) => {}
-);
 
 // ERROR 404
 

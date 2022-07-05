@@ -11,12 +11,13 @@
     <p>Esta página está en construcción!</p>
     <div>
       <table class="centeredTable darkBorder">
-        <tr>
-          <td>
+        <tr class="lightBg">
+          <td class="shortPadding">
             <h3>Hola, <%= usuario.nombre %></h3>
             <img src=<%= usuario.avatar %>>
           </td>
-          <td>
+          <td><p>||| <br/> |||</p></td>
+          <td class="shortPadding">
             <p>Direccion: <%= usuario.direccion %> </p>
             <p>Edad: <%= usuario.edad %> </p>
             <p>Teléfono: <%= usuario.tel %> </p>
@@ -27,15 +28,18 @@
     <% if (productos.length > 0) { %>
     <table class="centeredTable darkBorder" style="padding: 10px">
       <% productos.forEach(producto => { %>
-      <tr>
+      <tr class="lessDarkBorder">
         <td class="lightBg">
           <h4><%= producto.nombre %></h4>
           <img src=<%= producto.thumbnail %> />
           <p> <%= producto.descripcion %> </p>
         </td>
+        <td><p>|</p></td>
         <td>
           <p>$<%= producto.precio %> </p>
-          <small>CÓDIGO <%= producto.codigo %> </small>
+          <small>CÓDIGO <%= producto.codigo %></small>
+          <br/>
+          <button onclick="agregar('<%=producto.id%>')">Agregar al chango</button>
         </td>
       </tr>
       <br />
