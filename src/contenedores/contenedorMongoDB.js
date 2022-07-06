@@ -15,17 +15,18 @@ class ContenedorMongoDB {
                 useUnifiedTopology: true,
             });
             const largestId = await this.Model.find({},{_id: 0, id: 1}).sort({id: -1}).limit(1);
-            logger.trace("ID MAS GRANDE " + largestId);
+            // logger.trace("ID MAS GRANDE " + largestId);
             if(largestId[0]) {
                 data.id = largestId[0].id + 1;
             } else {
                 data.id = 0;
             }
             data.timestamp = Date.now();
+            //logger.trace(data);
             const nuevaData = new this.Model(data);
+            //logger.info(nuevaData);
             await nuevaData.save();
-            logger.info(data);
-            logger.info("Data guardada :)");
+            //logger.info("Data guardada :)");
             return data.id;
         } catch (e) {
             logErr.error(e);
@@ -57,7 +58,6 @@ class ContenedorMongoDB {
             } else {
                 return null;
             }
-             
         } catch (e) {
             logErr.error(e);
         }

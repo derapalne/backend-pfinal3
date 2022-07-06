@@ -4,6 +4,7 @@ import ProductosDaoMongoDB from "../daos/productosDaoMongoDB.js";
 import { config } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { sendOrderMail } from "../utils/mailer.js";
+import { sendOrderSMS, sendOrderWhatsapp } from "../utils/twilioStuff.js";
 
 const routerCart = Router();
 const carritosDao = new CarritosDaoMongoDB(config.MONGO_URI);
@@ -98,9 +99,9 @@ routerCart.post("/:id/confirmar", async (req, res) => {
     if(req.isAuthenticated()) {
         const idCart = req.params.id;
         const productos = await carritosDao.confirmarPedido(idCart);
-        logger.trace({productos});
         sendOrderMail(req.user, productos);
-        logger.trace(await carritosDao.getById(idCart));
+        sendOrderSMS(req.user, productos);
+        sendOrderWhatsapp(req.user, productos);
         res.status(200).render("pedido-confirmado");
     }
 })

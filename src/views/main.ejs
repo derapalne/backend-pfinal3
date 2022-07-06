@@ -49,7 +49,7 @@
           <td>$<%=producto.precio%></td>
           <td>---+</td>
           <td>
-            <form action="/api/carrito/0/productos" method="post">
+            <form action="/api/carrito/<%=carrito.id%>/productos" method="post">
               <input type="hidden" name="delete" value="delete" />
               <input type="hidden" name="idProd" value="<%= %>>" />
               <input type="submit" value="Sacar" />
@@ -59,7 +59,7 @@
         <tr></tr>
         <% }) %>
       </table>
-      <form action="/api/carrito/0/confirmar" method="post">
+      <form action="/api/carrito/<%=carrito.id%>/confirmar" method="post">
         <input type="submit" value="Realizar pedido" />
       </form>
       <% } %>
@@ -82,7 +82,7 @@
           <p>$<%= producto.precio %> </p>
           <small>CÓDIGO <%= producto.codigo %></small>
           <br />
-          <form action="/api/carrito/0/productos" method="post">
+          <form action="/api/carrito/<%=carrito.id%>/productos" method="post">
             <input type="hidden" name="idProd" value=<%=producto.id%>>
             <input type="submit" value="Agregar al chango">
           </form>

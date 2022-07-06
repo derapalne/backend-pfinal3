@@ -35,7 +35,7 @@ passport.use(
                     nombre: req.body.nombre,
                     direccion: req.body.direccion,
                     edad: req.body.edad,
-                    tel: req.body.tel,
+                    tel: "+5411" + req.body.tel,
                     avatar: "./imgUploads/" + req.file.filename,
                 };
                 // logger.trace(usuario);

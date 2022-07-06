@@ -19,14 +19,17 @@ routerMain.get("/", async (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect("/login");
         } else {
-            let carrito = await carritosDao.getById(0);
-            if (!carrito) {
-                //logger.trace("hola");
-                await carritosDao.deleteAll();
-                await carritosDao.agregarCart();
-                carrito = await carritosDao.getById(0);
+            let carrito = await carritosDao.getByEmail(req.user.email);
+            logger.trace(req.user.email + " " + carrito.userEmail);
+            // NO ESTA CAMBIANDO EL CARRITO CUANDO SE CAMBIA EL USUARIOOOOOOOOOOO
+            if (carrito.userEmail != req.user.email) {
+                // await carritosDao.deleteAll();
+                logger.info("holaaaaaaa");
+                const carritoId = await carritosDao.agregarCart(req.user.email);
+                carrito = await carritosDao.getByEmail(req.user.email);
+                logger.trace(carritoId);
             }
-            logger.trace(carrito);
+            logger.trace(req.user.email + " " + carrito.userEmail);
             res.status(200).render("main", {
                 usuario: req.user,
                 productos: await productosDao.getAll(),

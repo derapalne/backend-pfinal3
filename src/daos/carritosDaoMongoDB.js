@@ -2,23 +2,42 @@ import ContenedorMongoDB from "../contenedores/contenedorMongoDB.js";
 import mongoose from "mongoose";
 import Carritos from "../models/carritos.js";
 import check from "../utils/check.js";
-import { logger } from "../utils/logger.js";
+import { logErr, logger } from "../utils/logger.js";
 
 class CarritosDaoMongoDB extends ContenedorMongoDB {
     constructor(uri) {
         super(uri, Carritos);
     }
 
-    async agregarCart() {
+    async agregarCart(email) {
         try {
             mongoose.connect(this.uri, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });
-            const carrito = { productos: [] };
+            // logger.trace({user: email});
+            const carrito = { productos: [], userEmail: email };
+            // logger.info({carrito});
             return this.guardar(carrito);
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    async getByEmail(email) {
+        try {
+            mongoose.connect(this.uri, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            const respuesta = await this.Model.find({ email: email }, { _id: 0, __v: 0 });
+            if(respuesta[0]) {
+                return respuesta[0];
+            } else {
+                return null;
+            }
+        } catch (e) {
+            logErr.error(e);
         }
     }
 
