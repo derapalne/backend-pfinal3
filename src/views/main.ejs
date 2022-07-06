@@ -50,19 +50,22 @@
           <td>---+</td>
           <td>
             <form action="/api/carrito/0/productos" method="post">
-              <input type="hidden" name="delete" value="delete"/>
-              <input type="hidden" name="idProd" value="<%= %>>"/>
-              <input type="submit" value="Sacar"/>
+              <input type="hidden" name="delete" value="delete" />
+              <input type="hidden" name="idProd" value="<%= %>>" />
+              <input type="submit" value="Sacar" />
             </form>
           </td>
         </tr>
         <tr></tr>
         <% }) %>
       </table>
+      <form action="/api/carrito/0/confirmar" method="post">
+        <input type="submit" value="Realizar pedido" />
+      </form>
       <% } %>
     </div>
     <!-- PRODUCTOS -->
-    <br/>
+    <br />
     <% if (productos.length > 0) { %>
     <table class="centeredTable darkBorder" style="padding: 10px">
       <% productos.forEach(producto => { %>
@@ -90,7 +93,7 @@
     <% } else { %>
 
     <% } %>
-    <br/>
+    <br />
     <a href="/">WIP</a>
   </div>
 </body>

@@ -3,6 +3,7 @@ import CarritosDaoMongoDB from "../daos/carritosDaoMongoDB.js";
 import ProductosDaoMongoDB from "../daos/productosDaoMongoDB.js";
 import { config } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
+import { sendOrderMail } from "../utils/mailer.js";
 
 const routerCart = Router();
 const carritosDao = new CarritosDaoMongoDB(config.MONGO_URI);
@@ -92,5 +93,16 @@ routerCart.delete("/:id/productos/:id_prod", (req, res) => {
         res.status(403).redirect("/login");
     }
 });
+
+routerCart.post("/:id/confirmar", async (req, res) => {
+    if(req.isAuthenticated()) {
+        const idCart = req.params.id;
+        const productos = await carritosDao.confirmarPedido(idCart);
+        logger.trace({productos});
+        sendOrderMail(req.user, productos);
+        logger.trace(await carritosDao.getById(idCart));
+        res.status(200).render("pedido-confirmado");
+    }
+})
 
 export default routerCart;

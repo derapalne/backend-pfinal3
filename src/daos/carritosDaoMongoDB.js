@@ -52,7 +52,7 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    async deleteProdById(id, slotProd) {
+    async deleteProdBySlot(id, slotProd) {
         try {
             mongoose.connect(this.uri, {
                 useNewUrlParser: true,
@@ -69,6 +69,49 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
                     return slotProd;
                 } else {
                     return "No se ha podido borrar el producto";
+                }
+            } else {
+                return "Id inexistente.";
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async deleteAllProds(id) {
+        try {
+            mongoose.connect(this.uri, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            const carritoArray = await this.Model.find({ id: id });
+            if (carritoArray.length) {
+                carritoArray[0].productos = [];
+                logger.trace("CarritoArray: --- "+carritoArray[0]);
+                await this.guardar(carritoArray[0]);
+                return carritoArray[0].id;
+            } else {
+                return "Id inexistente.";
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async confirmarPedido(id) {
+        try {
+            mongoose.connect(this.uri, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            const carritoArray = await this.Model.find({ id: id });
+            if (carritoArray.length) {
+                const productos = carritoArray[0].productos;
+                const ok = await this.deleteAllProds(id);
+                if(isNaN(ok)) {
+                    return "No se han podido borrar los productos del carrito"
+                } else {
+                    return productos;
                 }
             } else {
                 return "Id inexistente.";

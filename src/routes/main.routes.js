@@ -22,10 +22,11 @@ routerMain.get("/", async (req, res) => {
             let carrito = await carritosDao.getById(0);
             if (!carrito) {
                 //logger.trace("hola");
+                await carritosDao.deleteAll();
                 await carritosDao.agregarCart();
                 carrito = await carritosDao.getById(0);
             }
-            //logger.trace(carrito);
+            logger.trace(carrito);
             res.status(200).render("main", {
                 usuario: req.user,
                 productos: await productosDao.getAll(),
