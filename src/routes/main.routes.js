@@ -20,7 +20,7 @@ routerMain.get("/", async (req, res) => {
             res.redirect("/login");
         } else {
             let carrito = await carritosDao.getByEmail(req.user.email);
-            if (carrito.userEmail != req.user.email) {
+            if (!carrito || carrito.userEmail != req.user.email) {
                 await carritosDao.agregarCart(req.user.email);
                 carrito = await carritosDao.getByEmail(req.user.email);
             }
