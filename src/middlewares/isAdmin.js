@@ -1,8 +1,8 @@
 // ADMIN CHECK
+import { config } from "../utils/config.js";
 
 export const isAdmin = (req, res, next) => {
-    let admin = true;
-    if (admin) {
+    if (config.ADMIN) {
         next();
     } else {
         res.status(203).json({
