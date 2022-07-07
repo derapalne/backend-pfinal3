@@ -20,16 +20,10 @@ routerMain.get("/", async (req, res) => {
             res.redirect("/login");
         } else {
             let carrito = await carritosDao.getByEmail(req.user.email);
-            logger.trace(req.user.email + " " + carrito.userEmail);
-            // NO ESTA CAMBIANDO EL CARRITO CUANDO SE CAMBIA EL USUARIOOOOOOOOOOO
             if (carrito.userEmail != req.user.email) {
-                // await carritosDao.deleteAll();
-                logger.info("holaaaaaaa");
-                const carritoId = await carritosDao.agregarCart(req.user.email);
+                await carritosDao.agregarCart(req.user.email);
                 carrito = await carritosDao.getByEmail(req.user.email);
-                logger.trace(carritoId);
             }
-            logger.trace(req.user.email + " " + carrito.userEmail);
             res.status(200).render("main", {
                 usuario: req.user,
                 productos: await productosDao.getAll(),
@@ -47,6 +41,18 @@ routerMain.get("/login", (req, res) => {
             res.redirect("/");
         } else {
             res.status(200).render("login", { error: null });
+        }
+    } catch (e) {
+        logErr.error(e);
+    }
+});
+
+routerMain.get("/login-error", (req, res) => {
+    try {
+        if (req.isAuthenticated()) {
+            res.redirect("/");
+        } else {
+            res.status(200).render("login", { error: "Credenciales incorrectas!" });
         }
     } catch (e) {
         logErr.error(e);

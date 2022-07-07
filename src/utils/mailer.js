@@ -1,7 +1,8 @@
 import { createTransport } from "nodemailer";
+import { config } from "./config.js";
 import { logErr } from "./logger.js";
 
-const TEST_MAIL = "derapalne@gmail.com";
+const TEST_MAIL = config.ADMIN_MAIL;
 
 const transporter = createTransport({
     host: "smtp.ethereal.email",

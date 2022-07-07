@@ -30,7 +30,7 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });
-            const respuesta = await this.Model.find({ email: email }, { _id: 0, __v: 0 });
+            const respuesta = await this.Model.find({ userEmail: email }, { _id: 0, __v: 0 });
             if(respuesta[0]) {
                 return respuesta[0];
             } else {
