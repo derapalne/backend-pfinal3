@@ -2,6 +2,7 @@ import {Router} from 'express';
 import ProductosDaoMongoDB from '../daos/productosDaoMongoDB.js';
 import {config} from '../utils/config.js';
 import {isAdmin} from '../middlewares/isAdmin.js';
+import { isAuth } from '../middlewares/isAuthenticated.js';
 
 const routerProd = Router();
 const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
@@ -10,8 +11,7 @@ const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
 
 // Me permite listar todos los productos disponibles ó un producto por su ID
 // USUARIO + ADMIN
-routerProd.get("/:id?", async (req, res) => {
-    if (req.isAuthenticated()) {
+routerProd.get("/:id?", isAuth, async (req, res) => {
         const id = req.params.id;
         if (isNaN(id)) {
             res.status(200).json(await productosDao.getAll());
@@ -23,9 +23,6 @@ routerProd.get("/:id?", async (req, res) => {
                 res.status(200).json(respuesta);
             }
         }
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
 // Para incorporar productos al listado

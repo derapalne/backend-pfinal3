@@ -13,12 +13,11 @@ const carritosDao = new CarritosDaoMongoDB(config.MONGO_URI);
 import { logger, logErr } from "../utils/logger.js";
 // >>>>>GUARDADO DE IMAGENES
 import upload from "../utils/fileManager.js";
+// >>>>>MIDDLEWARES
+import {isAuth} from "../middlewares/isAuthenticated.js"
 
-routerMain.get("/", async (req, res) => {
+routerMain.get("/", isAuth, async (req, res) => {
     try {
-        if (!req.isAuthenticated()) {
-            res.redirect("/login");
-        } else {
             let carrito = await carritosDao.getByEmail(req.user.email);
             if (!carrito || carrito.userEmail != req.user.email) {
                 await carritosDao.agregarCart(req.user.email);
@@ -29,7 +28,6 @@ routerMain.get("/", async (req, res) => {
                 productos: await productosDao.getAll(),
                 carrito: carrito,
             });
-        }
     } catch (e) {
         logErr.error(e);
     }
@@ -85,7 +83,7 @@ routerMain.get("/register-error", (req, res) => {
 });
 
 routerMain.post(
-    "/register",
+    "/register", isAuth,
     upload.single("avatar"),
     passport.authenticate("local-register", {
         successRedirect: "/",
@@ -105,15 +103,13 @@ routerMain.post(
     (req, res, next) => {}
 );
 
-routerMain.post("/logout", (req, res) => {
+routerMain.post("/logout", isAuth, (req, res) => {
     try {
-        if (req.isAuthenticated()) {
             logger.trace("Desruyendo datos de sesión");
             req.session.destroy((err) => {
                 logger.trace("Datos de sesión destruidos");
                 res.status(200).render("login", {error: null});
             });
-        }
     } catch (e) {
         logErr.error(e);
     }

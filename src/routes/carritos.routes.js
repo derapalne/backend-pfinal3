@@ -6,6 +6,8 @@ import { logger } from "../utils/logger.js";
 import { sendOrderMail } from "../utils/mailer.js";
 import { sendOrderSMS, sendOrderWhatsapp } from "../utils/twilioStuff.js";
 
+import { isAuth } from "../middlewares/isAuthenticated.js";
+
 const routerCart = Router();
 const carritosDao = new CarritosDaoMongoDB(config.MONGO_URI);
 const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
@@ -13,27 +15,18 @@ const productosDao = new ProductosDaoMongoDB(config.MONGO_URI);
 // ---------------------------------------------- ROUTER CARRITO ------------------------//
 
 // Crea un carrito y devuelve su ID
-routerCart.post("/", async (req, res) => {
-    if (req.isAuthenticated()) {
+routerCart.post("/", isAuth, async (req, res) => {
         res.status(201).json(await carritosDao.agregarCart());
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
 // Vacía un carrito y lo elimina
-routerCart.delete("/:id", async (req, res) => {
-    if (req.isAuthenticated()) {
+routerCart.delete("/:id", isAuth, async (req, res) => {
         const id = req.params.id;
         res.status(200).json(await carritosDao.deleteById(id));
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
 // Me permite listar todos los productos guardados en el carrito
-routerCart.get("/:id/productos", async (req, res) => {
-    if (req.isAuthenticated()) {
+routerCart.get("/:id/productos", isAuth, async (req, res) => {
         const id = req.params.id;
         const carrito = await carritosDao.getById(id);
         if (carrito) {
@@ -41,14 +34,10 @@ routerCart.get("/:id/productos", async (req, res) => {
         } else {
             res.status(404).json({ error: "Carrito inexistente" });
         }
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
 // Para incorporar productos al carrito por su ID de producto
-routerCart.post("/:id/productos", async (req, res) => {
-    if (req.isAuthenticated()) {
+routerCart.post("/:id/productos", isAuth, async (req, res) => {
         const idCart = req.params.id;
         const idProd = req.body.idProd;
         const doDelete = req.body.delete;
@@ -78,32 +67,23 @@ routerCart.post("/:id/productos", async (req, res) => {
                 }
             }
         }
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
 // Eliminar un producto del carrito por su ID de carrito e ID de producto
-routerCart.delete("/:id/productos/:id_prod", (req, res) => {
-    if (req.isAuthenticated()) {
+routerCart.delete("/:id/productos/:id_prod", isAuth, (req, res) => {
         const idCart = req.params.id;
         const idProd = req.params.id_prod;
         carritosDao.deleteProdById(idCart, idProd);
         res.status(200).json({ mensaje: "El producto fue borrado" });
-    } else {
-        res.status(403).redirect("/login");
-    }
 });
 
-routerCart.post("/:id/confirmar", async (req, res) => {
-    if(req.isAuthenticated()) {
+routerCart.post("/:id/confirmar", isAuth, async (req, res) => {
         const idCart = req.params.id;
         const productos = await carritosDao.confirmarPedido(idCart);
         sendOrderMail(req.user, productos);
         sendOrderSMS(req.user, productos);
         sendOrderWhatsapp(req.user, productos);
         res.status(200).render("pedido-confirmado");
-    }
 })
 
 export default routerCart;
