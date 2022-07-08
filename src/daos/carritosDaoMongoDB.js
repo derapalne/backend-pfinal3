@@ -55,11 +55,14 @@ class CarritosDaoMongoDB extends ContenedorMongoDB {
                     // o seleccionarlos individualmente termina siendo imposible ya que todos sus datos son 
                     // iguales. Igual no puedo hacer que esta línea de abajo funcione y le agregue
                     // la propiedad de SLOT al producto.
-                    producto.slot = carrito[0].productos.length;
+                    // logger.trace("Carrito.productos.length " +  carrito[0].productos.length.toString())
+                    producto.slot = carrito[0].productos.length + 1;
+                    // logger.trace("Agregando slot al producto producto: " + producto.slot);
+                    // logger.trace("Producto: " + producto);
                     await carrito[0].productos.push(producto);
                     await this.Model.updateOne({ id: id }, { productos: carrito[0].productos });
-                    // logger.trace(producto, carrito[0].productos.length);
-                    return producto.id;
+                    // logger.trace("Carrito.productos " + carrito[0]);
+                    return producto.id; 
                 } else {
                     return "Id inexistente.";
                 }

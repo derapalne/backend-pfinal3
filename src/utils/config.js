@@ -11,5 +11,5 @@ export const config = {
     TWILIO_ACC_SID: process.env.TWILIO_ACC_SID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
     ADMIN_TEL: process.env.ADMIN_TEL,
-    ADMIN_MAIL: process.env.ADMIN_MAIL,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 };

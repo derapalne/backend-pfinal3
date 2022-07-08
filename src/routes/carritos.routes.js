@@ -43,7 +43,7 @@ routerCart.post("/:id/productos", isAuth, async (req, res) => {
         const doDelete = req.body.delete;
         // Si existe el valor doDelete, significa BORRAR el producto 👍
         if (doDelete) {
-            const deleteReturn = await carritosDao.deleteProdById(idCart, idProd);
+            const deleteReturn = await carritosDao.deleteProdBySlot(idCart, idProd);
             // logger.trace({deleteReturn});
             // Si no es un número, es un error!
             if (isNaN(deleteReturn)) {

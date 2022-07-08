@@ -51,7 +51,7 @@
           <td>
             <form action="/api/carrito/<%=carrito.id%>/productos" method="post">
               <input type="hidden" name="delete" value="delete" />
-              <input type="hidden" name="idProd" value="<%= %>>" />
+              <input type="hidden" name="idProd" value="<%= producto.slot %>>" />
               <input type="submit" value="Sacar" />
             </form>
           </td>
